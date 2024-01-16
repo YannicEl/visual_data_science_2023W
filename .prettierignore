@@ -1,0 +1,6 @@
+**/*.d.ts
+
+**/pnpm-lock.yaml
+
+**/dist
+**/scripts

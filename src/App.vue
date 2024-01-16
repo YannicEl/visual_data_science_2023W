@@ -1,17 +1,13 @@
 <script setup lang="ts">
-const { loaded: dataLoaded } = useData();
-const { loaded: boundariesLoaded } = useBoundariesData();
+const { loaded } = useData();
 </script>
 
 <template>
-	<div
-		v-if="dataLoaded && boundariesLoaded"
-		class="grid h-screen grid-cols-2 grid-rows-[min-content] gap-4 p-4"
-	>
+	<div v-if="loaded" class="grid h-screen grid-cols-2 grid-rows-[min-content] gap-4 p-4">
 		<FilterView class="col-span-2" />
 
-		<MapView class="col-span-2" />
-		<!-- <TableView /> -->
+		<MapView />
+		<TableView />
 	</div>
 
 	<div v-else class="w-scren flex h-screen items-center justify-center gap-4">

@@ -4,7 +4,7 @@
 			<span>From:</span>
 
 			<input
-				type="date"
+				type="number"
 				v-model="values.from"
 				:min="min"
 				:max="max"
@@ -16,7 +16,7 @@
 			<span>Till:</span>
 
 			<input
-				type="date"
+				type="number"
 				v-model="values.till"
 				:min="min"
 				:max="max"
@@ -28,14 +28,14 @@
 
 <script lang="ts" setup>
 interface DateRange {
-	from: Date;
-	till: Date;
+	from: number;
+	till: number;
 }
 
 const { modelValue, min, max } = defineProps<{
 	modelValue: DateRange;
-	min?: string;
-	max?: string;
+	min?: number;
+	max?: number;
 }>();
 
 const emit = defineEmits<{
@@ -44,24 +44,15 @@ const emit = defineEmits<{
 
 const values = computed(() => {
 	return {
-		from: dateToStirng(modelValue.from),
-		till: dateToStirng(modelValue.till),
+		from: modelValue.from,
+		till: modelValue.till,
 	};
 });
 
-function emitValue({ from, till }: { from?: string; till?: string }) {
+function emitValue({ from, till }: { from?: number; till?: number }) {
 	emit('update:modelValue', {
-		from: from ? new Date(from) : modelValue.from,
-		till: till ? new Date(till) : modelValue.till,
+		from: from ? from : modelValue.from,
+		till: till ? till : modelValue.till,
 	});
-}
-
-function dateToStirng(date: Date): string {
-	let month = (date.getMonth() + 1).toString();
-	if (month.length === 1) month = '0' + month;
-
-	let day = date.getDate().toString();
-	if (day.length === 1) day = '0' + day;
-	return `${date.getFullYear()}-${month}-${day}`;
 }
 </script>

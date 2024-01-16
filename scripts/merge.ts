@@ -12,16 +12,18 @@ const mapping = {
 };
 
 education_data.forEach((item) => {
-	const country = item['Country Code'];
+	const country_code = item['Country Code'];
+	const country_name = item['Country Name'];
 	const series = item['Series'];
 
 	Object.entries(item).forEach(([key, value]) => {
-		if (!value) return;
+		if (!value) value = "NA";
 
 		const year = Number(key.split(' ')[0]);
 		if (!Number.isInteger(year)) return;
+    if(year > 2019) return
 
-		const found = json.find((item) => item.country === country && item.year === year);
+		const found = json.find((item) => item.country_code === country_code && item.year === year);
 		if (found) {
 			found[mapping[series]] = value;
 
@@ -29,7 +31,8 @@ education_data.forEach((item) => {
 			json[index] = found;
 		} else {
 			json.push({
-				country,
+				country_name,
+				country_code,
 				year,
 				[mapping[series]]: value,
 			});
@@ -38,5 +41,6 @@ education_data.forEach((item) => {
 });
 
 writeFileSync('scripts/data_merged.json', JSON.stringify(json));
+writeFileSync('src/assets/data.json', JSON.stringify(json));
 
 console.log('done');

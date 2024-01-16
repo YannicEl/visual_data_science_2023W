@@ -1,18 +1,10 @@
 export interface Data {
-	type: string;
-	date: string;
-	part_of_a_policing_operation: boolean;
-	latitude: number;
-	longitude: number;
-	gender: string;
-	age_range: string;
-	self_defined_ethnicity: string;
-	officer_defined_ethnicity: string;
-	legislation: string;
-	object_of_search: string;
-	outcome: string;
-	lad_name: string;
-	lad_id: string;
+	country_code: string;
+	country_name: string;
+	year: number;
+	enrolment_rate_pre_primary: number;
+	enrolment_rate_primary: number;
+	enrolment_rate_secondary: number;
 }
 
 const data = shallowRef<Data[]>([]);
@@ -20,48 +12,25 @@ const loaded = ref(false);
 
 const filters = ref({
 	values: {
-		type: 'all',
-		age_range: 'all',
-		gender: 'all',
-		self_defined_ethnicity: 'all',
-		officer_defined_ethnicity: 'all',
-		legislation: 'all',
-		object_of_search: 'all',
-		outcome: 'all',
-		lad_name: 'all',
-		part_of_a_policing_operation: 'all',
-		date: {
-			from: new Date('2021-05-31'),
-			till: new Date('2021-07-01'),
-		},
+		country_name: 'all',
+		year: 2018,
 	},
 	options: {
-		type: extractOptions('type'),
-		age_range: extractOptions('age_range'),
-		gender: extractOptions('gender'),
-		self_defined_ethnicity: extractOptions('self_defined_ethnicity'),
-		officer_defined_ethnicity: extractOptions('officer_defined_ethnicity'),
-		legislation: extractOptions('legislation'),
-		object_of_search: extractOptions('object_of_search'),
-		outcome: extractOptions('outcome'),
-		lad_name: extractOptions('lad_name'),
-		part_of_a_policing_operation: extractOptions('part_of_a_policing_operation'),
+		country_name: extractOptions('country_name'),
+		year: extractOptions('year'),
 	},
 });
 
 const filtered = computed(() => {
-	const { date, ...rest } = filters.value.values;
-
 	console.time('filtering');
 	const ret = data.value.filter((item) => {
 		let ret = true;
 
-		Object.entries(rest).forEach(([key, value]) => {
+		Object.entries(filters.value.values).forEach(([key, value]) => {
 			if (value !== 'all' && item[key as keyof Data] !== value) ret = false;
 		});
 
-		const itemDate = new Date(item.date).valueOf();
-		if (itemDate < date.from.valueOf() || itemDate > date.till.valueOf()) ret = false;
+		// if (item.year < year.from || item.year > year.till) ret = false;
 
 		return ret;
 	});
@@ -77,7 +46,7 @@ export function useData() {
 }
 
 export function loadData() {
-	import('../assets/data_boundaries.json').then((res) => {
+	import('../assets/data.json').then((res) => {
 		data.value = res.default as Data[];
 		loaded.value = true;
 		console.log(`Loaded ${data.value.length} data items`);
@@ -86,11 +55,23 @@ export function loadData() {
 
 function extractOptions(key: keyof Data) {
 	return computed(() => {
-		const set = new Set<string>(['all']);
+		const set = new Set<string | number>();
 		data.value.forEach((item) => {
 			set.add(item[key] as any);
 		});
 
-		return Array.from(set).filter(Boolean);
+		return Array.from(set)
+			.filter(Boolean)
+			.sort((a, b) => {
+				if (typeof a === 'number' && typeof b === 'number') {
+					return b - a;
+				}
+
+				if (typeof a === 'string' && typeof b === 'string') {
+					return a.localeCompare(b);
+				}
+
+				return 0;
+			});
 	});
 }

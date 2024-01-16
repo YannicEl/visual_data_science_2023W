@@ -24,17 +24,14 @@
 <script lang="ts" setup>
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+const { initMap, map } = useMapbox();
 const { filters } = useData();
-
-const mapboxToken = String(import.meta.env.VITE_MAPBOX_TOKEN);
-const { boundariesData } = useBoundariesData();
 
 const hoverInfoDistrict = ref('Hover over a district!');
 const hoverInfoCase = ref<Record<string, any>>({});
 
 onMounted(() => {
-	const { initMap, map } = useMapbox();
-	initMap(mapboxToken, [-0.127029, 51.497278], 'map');
+	initMap([15.2551, 54.526], 'map');
 
 	// const { initPopup } = useMapPopup();
 	// initPopup();

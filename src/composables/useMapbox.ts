@@ -4,25 +4,20 @@ import { ref, Ref } from 'vue';
 const map = ref<mapboxgl.Map>();
 
 export const useMapbox = () => {
-	const init = (mapboxToken: string, center: [number, number], containerId: string) => {
-		mapboxgl.accessToken = mapboxToken;
+	const init = (center: [number, number], containerId: string) => {
+		mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 		map.value = new mapboxgl.Map({
 			container: containerId,
 			style: 'mapbox://styles/mapbox/light-v11',
 			center: center,
-			zoom: 8,
+			zoom: 3,
 			maxZoom: 19,
 		});
 	};
 
-	const centerMap = (center: { lat: number; lng: number }) => {
-		map.value?.flyTo({ center, essential: true });
-	};
-
 	return {
 		initMap: init,
-		centerMap: centerMap,
 		map: map as Ref<mapboxgl.Map>,
 	};
 };

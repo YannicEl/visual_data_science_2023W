@@ -5,7 +5,7 @@
 
 			<select v-model="filters.values[key]">
 				<option value="all">all</option>
-				<option v-for="option in options">{{ option }}</option>
+				<option v-for="option in options" :value="option">{{ option }}</option>
 			</select>
 		</label>
 	</div>

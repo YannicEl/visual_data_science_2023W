@@ -2,9 +2,9 @@ export interface Data {
 	country_code: string;
 	country_name: string;
 	year: number;
-	enrolment_rate_pre_primary: number;
-	enrolment_rate_primary: number;
-	enrolment_rate_secondary: number;
+	enrolment_rate_pre_primary: number | 'NA';
+	enrolment_rate_primary: number | 'NA';
+	enrolment_rate_secondary: number | 'NA';
 }
 
 const data = shallowRef<Data[]>([]);
@@ -14,10 +14,16 @@ const filters = ref({
 	values: {
 		country_name: 'all',
 		year: 2018,
+		indicator: 'all',
 	},
 	options: {
 		country_name: extractOptions('country_name'),
 		year: extractOptions('year'),
+		indicator: computed(() => [
+			'enrolment_rate_pre_primary',
+			'enrolment_rate_primary',
+			'enrolment_rate_secondary',
+		]),
 	},
 });
 

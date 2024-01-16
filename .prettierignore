@@ -3,4 +3,4 @@
 **/pnpm-lock.yaml
 
 **/dist
-**/scripts
+scripts/data_merged.json

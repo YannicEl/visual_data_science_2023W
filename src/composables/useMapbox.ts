@@ -1,26 +1,29 @@
-import mapboxgl, { LngLatLike } from 'mapbox-gl';
+import { Map } from 'mapbox-gl';
 
-const map = ref<mapboxgl.Map>();
+const map = ref<Map>();
+
+const centerOfEurope = { lat: 50, lon: 15 };
 
 export const useMapbox = () => {
-	const init = (container: HTMLElement | string, center: LngLatLike = [0, 0]) => {
-		mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
-
-		map.value = new mapboxgl.Map({
+	function initMap(container: HTMLElement | string, center = centerOfEurope): Map {
+		const ret = new Map({
+			accessToken: import.meta.env.VITE_MAPBOX_TOKEN,
 			container,
 			style: 'mapbox://styles/mapbox/light-v11',
 			projection: {
 				name: 'mercator',
-				center,
 			},
 			center,
-			zoom: 3,
+			zoom: 2,
 			maxZoom: 19,
 		});
-	};
+
+		map.value = ret;
+		return ret;
+	}
 
 	return {
-		initMap: init,
-		map: map as Ref<mapboxgl.Map>,
+		initMap,
+		map,
 	};
 };

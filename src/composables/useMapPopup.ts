@@ -1,18 +1,20 @@
-import mapboxgl from 'mapbox-gl';
+import { LngLatLike, Popup as MapPopup } from 'mapbox-gl';
 import { useMapbox } from './useMapbox';
 
 const { map } = useMapbox();
-const mapPopup = ref<mapboxgl.Popup>();
+const mapPopup = ref<MapPopup>();
 
 export const useMapPopup = () => {
 	const initPopup = () => {
-		mapPopup.value = new mapboxgl.Popup({
+		mapPopup.value = new MapPopup({
 			closeButton: true,
 			closeOnClick: true,
 		});
 	};
 
-	const setPopup = (title: string, content: string, lngLat: mapboxgl.LngLatLike) => {
+	const setPopup = (title: string, content: string, lngLat: LngLatLike) => {
+		if (!map.value) return;
+
 		mapPopup.value
 			?.setLngLat(lngLat)
 			.setHTML(

@@ -45,14 +45,14 @@ watch(data, (newData) => {
 watch(mapElement, (newValue) => {
 	if (!newValue) return;
 
-	initMap(newValue, { lat: 54.526, lon: 15.2551 });
+	const map = initMap(newValue);
 
 	// const { initPopup } = useMapPopup();
 	// initPopup();
-	// bindMapPopup(map.value);
+	// bindMapPopup(map.);
 
-	map.value.on('style.load', async () => {
-		map.value.addSource('countries', {
+	map.on('style.load', async () => {
+		map.addSource('countries', {
 			type: 'vector',
 			url: 'mapbox://mapbox.country-boundaries-v1',
 		});
@@ -66,7 +66,7 @@ watch(mapElement, (newValue) => {
 
 		// Add layer from the vector tile source to create the choropleth
 		// Insert it below the 'admin-1-boundary-bg' layer in the style
-		map.value.addLayer(
+		map.addLayer(
 			{
 				id: 'countries-join',
 				type: 'fill',
@@ -81,8 +81,8 @@ watch(mapElement, (newValue) => {
 			'admin-1-boundary-bg'
 		);
 
-		// map.value.on('mousemove', (event) => {
-		// 	const counts = map.value.queryRenderedFeatures(event.point, {
+		// map..on('mousemove', (event) => {
+		// 	const counts = map..queryRenderedFeatures(event.point, {
 		// 		layers: ['boundaries-fill'],
 		// 	});
 
@@ -91,7 +91,7 @@ watch(mapElement, (newValue) => {
 		// 		? `${count.properties?.LAD13NM}: ${count.properties?.count} cases`
 		// 		: 'Hover over a district!';
 
-		// 	const cases = map.value.queryRenderedFeatures(event.point, {
+		// 	const cases = map..queryRenderedFeatures(event.point, {
 		// 		layers: ['data'],
 		// 	});
 
@@ -100,7 +100,7 @@ watch(mapElement, (newValue) => {
 		// 	// hoverInfoCase.value = caseFeature && caseFeature.properties ? caseFeature.properties : {};
 		// });
 
-		// map.value.on('click', 'boundaries-fill', (e) => {
+		// map..on('click', 'boundaries-fill', (e) => {
 		// 	if (!e.features || e.features.length === 0) return;
 		// 	const feature = e.features[0];
 		// 	if (!feature.properties) return;
@@ -111,7 +111,7 @@ watch(mapElement, (newValue) => {
 });
 
 function setData(data: Data[]) {
-	map.value.setPaintProperty('countries-join', 'fill-opacity', getMatchExpression(data));
+	map.value?.setPaintProperty('countries-join', 'fill-opacity', getMatchExpression(data));
 }
 
 function getMatchExpression(data: Data[]): Expression {

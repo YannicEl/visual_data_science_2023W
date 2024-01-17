@@ -1,6 +1,22 @@
 <template>
-	<div class="relative h-full w-full">
-		<canvas ref="canvas" class="absolute inset-0"></canvas>
+	<div class="h-full w-full">
+		<label class="custom-input w-min px-4">
+			<span>Compare against</span>
+
+			<select v-model="filters.values.second_indicator" name="second_indicator">
+				<option
+					v-for="option in filters.options.indicators"
+					:value="option.value"
+					class="capitalize"
+				>
+					{{ option.name }}
+				</option>
+			</select>
+		</label>
+
+		<div class="relative">
+			<canvas ref="canvas" class="absolute inset-0"></canvas>
+		</div>
 	</div>
 </template>
 
@@ -27,7 +43,7 @@ watch(canvas, () => {
 	drawChart();
 });
 
-watch(data, () => {
+watch([data, filters.value.values], () => {
 	drawChart();
 });
 
@@ -42,6 +58,9 @@ function drawChart() {
 		data: { datasets: [getDataset()] },
 		options: {
 			plugins: {
+				legend: {
+					display: false,
+				},
 				title: {
 					display: true,
 					text: 'Chart.js Bar Chart - Stacked',

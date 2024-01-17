@@ -14,7 +14,7 @@ export const useMapbox = () => {
 				name: 'mercator',
 			},
 			center,
-			zoom: 2,
+			zoom: 1.5,
 			maxZoom: 19,
 		});
 

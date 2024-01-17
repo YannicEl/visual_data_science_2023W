@@ -25,3 +25,7 @@ label.custom-input {
 		@apply border-2 border-black bg-white px-2 py-1;
 	}
 }
+
+button {
+	@apply border-1 h-min border-black bg-black px-2 py-1 text-white;
+}

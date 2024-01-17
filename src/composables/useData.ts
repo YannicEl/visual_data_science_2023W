@@ -5,13 +5,23 @@ export interface Data {
 	enrolment_rate_pre_primary: number | 'NA';
 	enrolment_rate_primary: number | 'NA';
 	enrolment_rate_secondary: number | 'NA';
+	annual_freshwater_withdrawals: number | 'NA';
+	electric_power_consumption: number | 'NA';
+	access_to_electricity: number | 'NA';
 }
 
 const data = shallowRef<Data[]>([]);
 const loaded = ref(false);
 
 const indicators = (
-	['enrolment_rate_pre_primary', 'enrolment_rate_primary', 'enrolment_rate_secondary'] as const
+	[
+		'enrolment_rate_pre_primary',
+		'enrolment_rate_primary',
+		'enrolment_rate_secondary',
+		'annual_freshwater_withdrawals',
+		'electric_power_consumption',
+		'access_to_electricity',
+	] as const
 ).map((key) => {
 	return {
 		value: key,
@@ -25,8 +35,8 @@ const filters = ref({
 	values: {
 		country_code: 'all',
 		year: 2018,
-		first_indicator: 'enrolment_rate_pre_primary' as Indicators,
-		second_indicator: 'enrolment_rate_secondary' as Indicators,
+		first_indicator: 'enrolment_rate_secondary' as Indicators,
+		second_indicator: 'access_to_electricity' as Indicators,
 	},
 	options: {
 		country_code: extractOptions('country_code'),
@@ -57,7 +67,7 @@ const filtered = computed(() => {
 export function useData() {
 	if (!loaded.value) loadData();
 
-	return { data: filtered, filters, loaded };
+	return { data: filtered, unfiltered: data, filters, loaded };
 }
 
 export function loadData() {

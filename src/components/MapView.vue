@@ -38,7 +38,7 @@ const mapElement = ref<HTMLDivElement>();
 // const hoverInfoDistrict = ref('Hover over a district!');
 // const hoverInfoCase = ref<Record<string, any>>({});
 
-watch(data, (newData) => {
+watch([data, filters.value.values], ([newData]) => {
 	setData(newData);
 });
 
@@ -116,7 +116,7 @@ function getMatchExpression(data: Data[]): Expression {
 
 	// Calculate color values for each country based on 'hdi' value
 	data.forEach((row) => {
-		const value = row['enrolment_rate_pre_primary'];
+		const value = row[filters.value.values.first_indicator];
 
 		if (value === 'NA') return;
 

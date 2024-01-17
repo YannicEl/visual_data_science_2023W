@@ -1,27 +1,45 @@
 <template>
-	<div class="relative h-full w-full">
-		<canvas ref="canvas" class="absolute inset-0"></canvas>
+	<div class="h-full w-full">
+		<div class="flex items-end gap-2">
+			<CountrySelect v-model="country" :allOption="false" class="w-min" />
+			<button @click="addCountry">Add Country</button>
+			<button @click="reset">Reset</button>
+		</div>
+
+		<div class="relative h-full w-full">
+			<canvas ref="canvas" class="absolute inset-0"></canvas>
+		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
 import {
-	BarController,
-	BarElement,
 	CategoryScale,
 	Chart,
 	ChartData,
+	Legend,
+	LineController,
+	LineElement,
 	LinearScale,
+	PointElement,
 	Title,
-	Tooltip,
 } from 'chart.js';
 
-const { data, filters } = useData();
+const { unfiltered: data, filters } = useData();
 
 const canvas = ref<HTMLCanvasElement>();
 const chart = ref<Chart>();
+const country = ref<string>('AUT');
 
-Chart.register(BarController, BarElement, Title, CategoryScale, LinearScale, Tooltip);
+Chart.register(
+	Title,
+	LineController,
+	CategoryScale,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Legend
+);
 
 watch(canvas, () => {
 	drawChart();
@@ -40,16 +58,13 @@ function drawChart() {
 	const data = getData();
 
 	chart.value = new Chart(canvas.value, {
-		type: 'bar',
+		type: 'line',
 		data,
 		options: {
 			plugins: {
-				legend: {
-					display: false,
-				},
 				title: {
 					display: true,
-					text: `Top ${data.datasets[0].data.length} countries for ${filters.value.values.first_indicator.split('_').join(' ')}`,
+					text: `${filters.value.values.first_indicator.split('_').join(' ')} over time`,
 				},
 				tooltip: {
 					enabled: true,
@@ -64,7 +79,7 @@ function drawChart() {
 				x: {
 					title: {
 						display: true,
-						text: 'Country',
+						text: 'Year',
 					},
 				},
 				y: {
@@ -83,28 +98,28 @@ function drawChart() {
 function getData(): ChartData<'bar'> {
 	const { first_indicator } = filters.value.values;
 
-	const slice = data.value
-		.filter((item) => item[first_indicator] !== 'NA')
-		.sort((a, b) => {
-			return (b[first_indicator] as number) - (a[first_indicator] as number);
-		})
-		.slice(0, 5);
-
-	// .forEach((item) => {
-	// 	labels.push(item.country_name);
-	// 	data2.push(item[first_indicator]);
-	// });
+	const { min, max } = filters.value.options.year;
+	const labels = Array(max - min)
+		.fill(0)
+		.map((_, i) => min + i);
 
 	return {
-		labels: slice.map(({ country_name }) => country_name),
+		labels,
 		datasets: [
 			{
-				data: slice.map((item) => item[first_indicator] as number),
-				backgroundColor: slice.map(
-					(_, i) => `rgb(25, 132, 255, ${1 - (1 / slice.length) * i + 0.2} )`
-				),
+				label: countryCodeToName(country.value),
+				data: data.value
+					.filter((row) => row.country_code === country.value)
+					.map((item) => item[first_indicator]) as number[],
+				borderColor: '#1984ff',
 			},
 		],
 	};
+}
+
+function reset() {}
+
+function addCountry() {
+	drawChart();
 }
 </script>

@@ -1,32 +1,11 @@
 <template>
 	<div class="flex flex-wrap items-end gap-4">
-		<label class="custom-input">
-			<span>Country</span>
-
-			<select v-model="filters.values.country_code" name="country_name">
-				<option value="all">all</option>
-				<option v-for="option in filters.options.country_code" :value="option">{{ option }}</option>
-			</select>
-		</label>
+		<CountrySelect v-model="filters.values.country_code" :allOption="true" />
 
 		<label class="custom-input">
-			<span>First indicator</span>
+			<span>Indicator</span>
 
 			<select v-model="filters.values.first_indicator" name="first_indicator">
-				<option
-					v-for="option in filters.options.indicators"
-					:value="option.value"
-					class="capitalize"
-				>
-					{{ option.name }}
-				</option>
-			</select>
-		</label>
-
-		<label class="custom-input">
-			<span>Second indicator</span>
-
-			<select v-model="filters.values.second_indicator" name="second_indicator">
 				<option
 					v-for="option in filters.options.indicators"
 					:value="option.value"

@@ -3,7 +3,7 @@ import mapboxgl, { LngLatLike } from 'mapbox-gl';
 const map = ref<mapboxgl.Map>();
 
 export const useMapbox = () => {
-	const init = (container: HTMLElement, center?: LngLatLike) => {
+	const init = (container: HTMLElement, center: LngLatLike = [0, 0]) => {
 		mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 		map.value = new mapboxgl.Map({

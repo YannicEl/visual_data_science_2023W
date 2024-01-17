@@ -18,7 +18,7 @@ const filters = ref({
 	},
 	options: {
 		country_name: extractOptions('country_name'),
-		year: extractOptions('year'),
+		year: extractRange('year'),
 		indicator: computed(() => [
 			'enrolment_rate_pre_primary',
 			'enrolment_rate_primary',
@@ -35,8 +35,6 @@ const filtered = computed(() => {
 		Object.entries(filters.value.values).forEach(([key, value]) => {
 			if (value !== 'all' && item[key as keyof Data] !== value) ret = false;
 		});
-
-		// if (item.year < year.from || item.year > year.till) ret = false;
 
 		return ret;
 	});
@@ -61,23 +59,30 @@ export function loadData() {
 
 function extractOptions(key: keyof Data) {
 	return computed(() => {
-		const set = new Set<string | number>();
+		const set = new Set<string>();
 		data.value.forEach((item) => {
 			set.add(item[key] as any);
 		});
 
 		return Array.from(set)
 			.filter(Boolean)
-			.sort((a, b) => {
-				if (typeof a === 'number' && typeof b === 'number') {
-					return b - a;
-				}
+			.sort((a, b) => a.localeCompare(b));
+	});
+}
 
-				if (typeof a === 'string' && typeof b === 'string') {
-					return a.localeCompare(b);
-				}
+function extractRange(key: keyof Data) {
+	return computed(() => {
+		let min: number = filters.value.values.year;
+		let max: number = filters.value.values.year;
 
-				return 0;
-			});
+		data.value.forEach((row) => {
+			const value = row[key];
+			if (typeof value !== 'number') return;
+
+			min = Math.min(min, value);
+			max = Math.max(max, value);
+		});
+
+		return { min, max };
 	});
 }

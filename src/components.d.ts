@@ -7,12 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    DateRangePicker: typeof import('./components/DateRangePicker.vue')['default']
     DetailView: typeof import('./components/DetailView.vue')['default']
     FilterView: typeof import('./components/FilterView.vue')['default']
     MapView: typeof import('./components/MapView.vue')['default']
     ResponsiveTable: typeof import('./components/ResponsiveTable.vue')['default']
     Spinner: typeof import('./components/Spinner.vue')['default']
     TableView: typeof import('./components/TableView.vue')['default']
+    YearRange: typeof import('./components/YearRange.vue')['default']
   }
 }

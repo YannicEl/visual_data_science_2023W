@@ -9,8 +9,8 @@
 				</tr>
 
 				<tr v-for="rowIndex in range">
-					<td v-for="(value, key) in data[rowIndex]">
-						{{ key === 'date' ? formatDate(value as string) : value }}
+					<td v-for="value in data[rowIndex]">
+						{{ value }}
 					</td>
 				</tr>
 			</ResponsiveTable>
@@ -18,7 +18,7 @@
 			<div v-else class="font-medium">No data found with selected filter options.</div>
 		</div>
 
-		<div class="mt-4 flex items-center justify-end gap-4">
+		<div class="mt-4 flex items-center justify-end gap-4 pb-2 pr-2">
 			<div>
 				{{ page * chunkSize + 1 }} - {{ Math.min(page * chunkSize + chunkSize, data.length) }} of
 				{{ data.length }}

@@ -1,13 +1,24 @@
 <template>
 	<div class="flex flex-wrap gap-4">
-		<label v-for="(options, key) in filters.options" class="custom-input">
-			<span class="capitalize">{{ key.split('_').join(' ') }}</span>
+		<label class="custom-input">
+			<span class="capitalize">Country</span>
 
-			<select v-model="filters.values[key]">
+			<select v-model="filters.values.country_name">
 				<option value="all">all</option>
-				<option v-for="option in options" :value="option">{{ option }}</option>
+				<option v-for="option in filters.options.country_name" :value="option">{{ option }}</option>
 			</select>
 		</label>
+
+		<label class="custom-input">
+			<span class="capitalize">Country</span>
+
+			<select v-model="filters.values.country_name">
+				<option value="all">all</option>
+				<option v-for="option in filters.options.country_name" :value="option">{{ option }}</option>
+			</select>
+		</label>
+
+		<YearRange v-model="filters.values.year" />
 	</div>
 </template>
 

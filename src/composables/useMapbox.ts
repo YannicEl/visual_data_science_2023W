@@ -1,16 +1,19 @@
-import mapboxgl from 'mapbox-gl';
-import { ref, Ref } from 'vue';
+import mapboxgl, { LngLatLike } from 'mapbox-gl';
 
 const map = ref<mapboxgl.Map>();
 
 export const useMapbox = () => {
-	const init = (center: [number, number], containerId: string) => {
+	const init = (container: HTMLElement, center?: LngLatLike) => {
 		mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 		map.value = new mapboxgl.Map({
-			container: containerId,
+			container,
 			style: 'mapbox://styles/mapbox/light-v11',
-			center: center,
+			projection: {
+				name: 'mercator',
+				center,
+			},
+			center,
 			zoom: 3,
 			maxZoom: 19,
 		});

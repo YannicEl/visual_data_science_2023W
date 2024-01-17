@@ -1,7 +1,12 @@
 <template>
 	<div class="flex flex-col">
-		<div class="relative h-full">
-			<div id="map" class="absolute h-full"></div>
+		<div class="relative flex h-full">
+			<div ref="mapElement" class="w-full"></div>
+			<div class="flex flex-col items-center pl-4 pr-2 text-xl font-semibold">
+				<span>1</span>
+				<div class="h-full w-12 bg-gradient-to-b from-[#1984ff] to-white"></div>
+				<span>0</span>
+			</div>
 			<!-- <DetailView :info="hoverInfoCase" class="absolute right-0 top-0 h-full w-1/3" />
 			<div class="absolute left-4 top-4 min-w-60 bg-black bg-opacity-80 p-4 text-white">
 				{{ hoverInfoDistrict }}
@@ -23,11 +28,12 @@
 
 <script lang="ts" setup>
 import { Expression } from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Data } from '../composables/useData';
 
 const { initMap, map } = useMapbox();
-const { data, filters } = useData();
+const { data } = useData();
+
+const mapElement = ref<HTMLDivElement>();
 
 // const hoverInfoDistrict = ref('Hover over a district!');
 // const hoverInfoCase = ref<Record<string, any>>({});
@@ -36,8 +42,10 @@ watch(data, (newData) => {
 	setData(newData);
 });
 
-onMounted(() => {
-	initMap([15.2551, 54.526], 'map');
+watch(mapElement, (newValue) => {
+	if (!newValue) return;
+
+	initMap(newValue, { lat: 54.526, lon: 15.2551 });
 
 	// const { initPopup } = useMapPopup();
 	// initPopup();
@@ -65,7 +73,8 @@ onMounted(() => {
 				source: 'countries',
 				'source-layer': 'country_boundaries',
 				paint: {
-					'fill-color': getMatchExpression(data.value),
+					'fill-color': '#1984ff',
+					'fill-opacity': getMatchExpression(data.value),
 				},
 				filter: worldview_filter,
 			},
@@ -102,7 +111,7 @@ onMounted(() => {
 });
 
 function setData(data: Data[]) {
-	map.value.setPaintProperty('countries-join', 'fill-color', getMatchExpression(data));
+	map.value.setPaintProperty('countries-join', 'fill-opacity', getMatchExpression(data));
 }
 
 function getMatchExpression(data: Data[]): Expression {
@@ -114,13 +123,14 @@ function getMatchExpression(data: Data[]): Expression {
 
 		if (value === 'NA') return;
 
-		const color = `rgb(${value.toFixed()}, 0, 0)`;
-
-		matchExpression.push(row['country_code'], color);
+		const opacity = Math.min(value / 100, 1);
+		matchExpression.push(row['country_code'], opacity);
 	});
 
+	if (!data.length) matchExpression.push(0);
+
 	// Last value is the default, used where there is no data
-	matchExpression.push('rgba(0, 0, 0, 0)');
+	matchExpression.push(0);
 
 	return matchExpression;
 }

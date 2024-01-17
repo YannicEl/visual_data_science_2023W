@@ -31,7 +31,7 @@ import type { Expression } from 'mapbox-gl';
 import type { Data } from '../composables/useData';
 
 const { initMap, map } = useMapbox();
-const { data } = useData();
+const { data, filters } = useData();
 
 const mapElement = ref<HTMLDivElement>();
 
@@ -81,6 +81,11 @@ watch(mapElement, (newValue) => {
 			'admin-1-boundary-bg'
 		);
 
+		map.on('click', 'countries-join', (event) => {
+			const country = event.features?.[0]?.properties?.iso_3166_1_alpha_3;
+			if (country) filters.value.values.country_code = country;
+		});
+
 		// map..on('mousemove', (event) => {
 		// 	const counts = map..queryRenderedFeatures(event.point, {
 		// 		layers: ['boundaries-fill'],
@@ -98,14 +103,6 @@ watch(mapElement, (newValue) => {
 		// 	const caseFeature = cases[0];
 		// 	if (caseFeature && caseFeature.properties) hoverInfoCase.value = caseFeature.properties;
 		// 	// hoverInfoCase.value = caseFeature && caseFeature.properties ? caseFeature.properties : {};
-		// });
-
-		// map..on('click', 'boundaries-fill', (e) => {
-		// 	if (!e.features || e.features.length === 0) return;
-		// 	const feature = e.features[0];
-		// 	if (!feature.properties) return;
-
-		// 	filters.value.values.lad_name = feature.properties.LAD13NM;
 		// });
 	});
 });
@@ -127,10 +124,10 @@ function getMatchExpression(data: Data[]): Expression {
 		matchExpression.push(row['country_code'], opacity);
 	});
 
-	if (!data.length) matchExpression.push(0);
-
 	// Last value is the default, used where there is no data
 	matchExpression.push(0);
+
+	while (matchExpression.length < 4) matchExpression.push(0, 0);
 
 	return matchExpression;
 }

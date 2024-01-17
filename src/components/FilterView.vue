@@ -3,9 +3,9 @@
 		<label class="custom-input">
 			<span>Country</span>
 
-			<select v-model="filters.values.country_name" name="country_name">
+			<select v-model="filters.values.country_code" name="country_name">
 				<option value="all">all</option>
-				<option v-for="option in filters.options.country_name" :value="option">{{ option }}</option>
+				<option v-for="option in filters.options.country_code" :value="option">{{ option }}</option>
 			</select>
 		</label>
 

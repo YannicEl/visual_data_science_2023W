@@ -6,12 +6,12 @@
 
 <script lang="ts" setup>
 import {
+	BarController,
+	BarElement,
+	CategoryScale,
 	Chart,
-	ChartDataset,
+	ChartData,
 	LinearScale,
-	Point,
-	PointElement,
-	ScatterController,
 	Title,
 	Tooltip,
 } from 'chart.js';
@@ -21,7 +21,7 @@ const { data, filters } = useData();
 const canvas = ref<HTMLCanvasElement>();
 const chart = ref<Chart>();
 
-Chart.register(ScatterController, PointElement, LinearScale, Tooltip, Title);
+Chart.register(BarController, BarElement, Title, CategoryScale, LinearScale, Tooltip);
 
 watch(canvas, () => {
 	drawChart();
@@ -38,8 +38,8 @@ function drawChart() {
 	const { first_indicator, second_indicator } = filters.value.values;
 
 	chart.value = new Chart(canvas.value, {
-		type: 'scatter',
-		data: { datasets: [getDataset()] },
+		type: 'bar',
+		data: getData(),
 		options: {
 			plugins: {
 				title: {
@@ -65,7 +65,7 @@ function drawChart() {
 				y: {
 					title: {
 						display: true,
-						text: second_indicator.split('_').join(' '),
+						text: 'Country',
 					},
 				},
 			},
@@ -75,21 +75,31 @@ function drawChart() {
 	});
 }
 
-function getDataset(): ChartDataset<'scatter'> {
-	const { first_indicator, second_indicator } = filters.value.values;
+function getData(): ChartData<'bar'> {
+	const { first_indicator } = filters.value.values;
+
+	const slice = data.value
+		.filter((item) => item[first_indicator] !== 'NA')
+		.sort((a, b) => {
+			return (b[first_indicator] as number) - (a[first_indicator] as number);
+		})
+		.slice(0, 5);
+
+	// .forEach((item) => {
+	// 	labels.push(item.country_name);
+	// 	data2.push(item[first_indicator]);
+	// });
 
 	return {
-		backgroundColor: '#1984ff',
-		data: data.value
-			.map((row) => {
-				const x = row[first_indicator];
-				const y = row[second_indicator];
-
-				if (x === 'NA' || y === 'NA') return;
-
-				return { x, y, country: row.country_name };
-			})
-			.filter(Boolean) as Point[],
+		labels: slice.map(({ country_name }) => country_name),
+		datasets: [
+			{
+				data: slice.map((item) => item[first_indicator] as number),
+				backgroundColor: slice.map(
+					(_, i) => `rgb(25, 132, 255, ${1 - (1 / slice.length) * i + 0.2} )`
+				),
+			},
+		],
 	};
 }
 </script>

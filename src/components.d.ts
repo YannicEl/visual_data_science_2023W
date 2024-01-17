@@ -7,6 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Barplot: typeof import('./components/Barplot.vue')['default']
+    copy: typeof import('./components/Scatterplot copy.vue')['default']
     DetailView: typeof import('./components/DetailView.vue')['default']
     FilterView: typeof import('./components/FilterView.vue')['default']
     MapView: typeof import('./components/MapView.vue')['default']

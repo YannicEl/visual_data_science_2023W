@@ -23,13 +23,13 @@ type Indicators = (typeof indicators)[number]['value'];
 
 const filters = ref({
 	values: {
-		country_name: 'all',
+		country_code: 'all',
 		year: 2018,
 		first_indicator: 'enrolment_rate_pre_primary' as Indicators,
 		second_indicator: 'enrolment_rate_secondary' as Indicators,
 	},
 	options: {
-		country_name: extractOptions('country_name'),
+		country_code: extractOptions('country_code'),
 		year: extractRange('year'),
 		indicators,
 	},
@@ -38,12 +38,12 @@ const filters = ref({
 const filtered = computed(() => {
 	console.time('filtering');
 
-	const { country_name, year } = filters.value.values;
+	const { country_code, year } = filters.value.values;
 
 	const ret = data.value.filter((item) => {
 		let ret = true;
 
-		Object.entries({ country_name, year }).forEach(([key, value]) => {
+		Object.entries({ country_code, year }).forEach(([key, value]) => {
 			if (value !== 'all' && item[key as keyof Data] !== value) ret = false;
 		});
 

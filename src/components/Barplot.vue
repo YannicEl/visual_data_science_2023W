@@ -35,7 +35,7 @@ function drawChart() {
 	if (!canvas.value) return;
 
 	chart.value?.destroy();
-	const { first_indicator, second_indicator } = filters.value.values;
+	const { first_indicator } = filters.value.values;
 
 	chart.value = new Chart(canvas.value, {
 		type: 'bar',

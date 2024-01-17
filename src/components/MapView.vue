@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Expression } from 'mapbox-gl';
+import type { Expression } from 'mapbox-gl';
 import type { Data } from '../composables/useData';
 
 const { initMap, map } = useMapbox();

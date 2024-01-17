@@ -10,29 +10,40 @@ export interface Data {
 const data = shallowRef<Data[]>([]);
 const loaded = ref(false);
 
+const indicators = (
+	['enrolment_rate_pre_primary', 'enrolment_rate_primary', 'enrolment_rate_secondary'] as const
+).map((key) => {
+	return {
+		value: key,
+		name: key.split('_').join(' '),
+	};
+});
+
+type Indicators = (typeof indicators)[number]['value'];
+
 const filters = ref({
 	values: {
 		country_name: 'all',
 		year: 2018,
-		indicator: 'all',
+		first_indicator: 'enrolment_rate_pre_primary' as Indicators,
+		second_indicator: 'enrolment_rate_secondary' as Indicators,
 	},
 	options: {
 		country_name: extractOptions('country_name'),
 		year: extractRange('year'),
-		indicator: computed(() => [
-			'enrolment_rate_pre_primary',
-			'enrolment_rate_primary',
-			'enrolment_rate_secondary',
-		]),
+		indicators,
 	},
 });
 
 const filtered = computed(() => {
 	console.time('filtering');
+
+	const { country_name, year } = filters.value.values;
+
 	const ret = data.value.filter((item) => {
 		let ret = true;
 
-		Object.entries(filters.value.values).forEach(([key, value]) => {
+		Object.entries({ country_name, year }).forEach(([key, value]) => {
 			if (value !== 'all' && item[key as keyof Data] !== value) ret = false;
 		});
 

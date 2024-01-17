@@ -1,8 +1,8 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { writeFileSync } from 'fs';
 import education_data from './data_education.json';
 
 // const json: any[] = JSON.parse(readFileSync('scripts/data_merged.json', 'utf8'));
-const json: any[] = []
+const json: any[] = [];
 
 console.log(json);
 
@@ -17,14 +17,14 @@ education_data.forEach((item) => {
 	const country_name = item['Country Name'];
 	const series = item['Series'];
 
-  if(!series) return
+	if (!series) return;
 
 	Object.entries(item).forEach(([key, value]) => {
-		if (!value) value = "NA";
+		if (!value) value = 'NA';
 
 		const year = Number(key.split(' ')[0]);
 		if (!Number.isInteger(year)) return;
-    if(year > 2019) return
+		if (year > 2018) return;
 
 		const found = json.find((item) => item.country_code === country_code && item.year === year);
 		if (found) {
@@ -33,7 +33,6 @@ education_data.forEach((item) => {
 			const index = json.indexOf(found);
 			json[index] = found;
 		} else {
-
 			json.push({
 				country_name,
 				country_code,

@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@unocss/reset": "0.58.3",
 		"@vueuse/core": "10.7.2",
+		"chart.js": "^4.4.1",
 		"mapbox-gl": "3.0.1",
 		"vue": "3.4.14"
 	},

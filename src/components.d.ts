@@ -11,6 +11,7 @@ declare module 'vue' {
     FilterView: typeof import('./components/FilterView.vue')['default']
     MapView: typeof import('./components/MapView.vue')['default']
     ResponsiveTable: typeof import('./components/ResponsiveTable.vue')['default']
+    Scatterplot: typeof import('./components/Scatterplot.vue')['default']
     Spinner: typeof import('./components/Spinner.vue')['default']
     TableView: typeof import('./components/TableView.vue')['default']
     YearRange: typeof import('./components/YearRange.vue')['default']

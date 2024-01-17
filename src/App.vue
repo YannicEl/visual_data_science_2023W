@@ -6,7 +6,8 @@ const { loaded } = useData();
 	<div v-if="loaded" class="grid h-screen grid-cols-2 grid-rows-[min-content] gap-4">
 		<FilterView class="col-span-2 px-4 pt-2" />
 
-		<MapView class="col-span-2" />
+		<MapView />
+		<Scatterplot />
 		<!-- <TableView /> -->
 	</div>
 

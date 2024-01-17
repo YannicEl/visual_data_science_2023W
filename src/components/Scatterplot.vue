@@ -12,12 +12,22 @@ const { data, filters } = useData();
 const canvas = ref<HTMLCanvasElement>();
 const chart = ref<Chart>();
 
-watch(canvas, async (canvas) => {
-	if (!canvas) return;
+Chart.register(ScatterController, PointElement, LinearScale);
 
-	Chart.register(ScatterController, PointElement, LinearScale);
+watch(canvas, () => {
+	drawChart();
+});
 
-	chart.value = new Chart(canvas, {
+watch(data, () => {
+	drawChart();
+});
+
+function drawChart() {
+	if (!canvas.value) return;
+
+	chart.value?.destroy();
+
+	chart.value = new Chart(canvas.value, {
 		type: 'scatter',
 		data: { datasets: [getDataset()] },
 		options: {
@@ -30,15 +40,7 @@ watch(canvas, async (canvas) => {
 			animation: false,
 		},
 	});
-});
-
-watch(data, () => {
-	console.log('hi');
-	if (!chart.value) return;
-
-	chart.value.data.datasets = [getDataset()];
-	chart.value.update();
-});
+}
 
 function getDataset(): ChartDataset<'scatter'> {
 	const { first_indicator, second_indicator } = filters.value.values;

@@ -1,6 +1,20 @@
 <template>
-	<div class="relative h-full w-full">
-		<canvas ref="canvas" class="absolute inset-0"></canvas>
+	<div>
+		<div class="px-4">
+			<label>
+				Best
+				<input type="radio" name="best" value="best" v-model="bestWorst" />
+			</label>
+
+			<label>
+				Worst
+				<input type="radio" name="worst" value="worst" v-model="bestWorst" />
+			</label>
+		</div>
+
+		<div class="relative h-full w-full">
+			<canvas ref="canvas" class="absolute inset-0"></canvas>
+		</div>
 	</div>
 </template>
 
@@ -21,13 +35,15 @@ const { data, filters } = useData();
 const canvas = ref<HTMLCanvasElement>();
 const chart = ref<Chart>();
 
+const bestWorst = ref<'best' | 'worst'>('best');
+
 Chart.register(BarController, BarElement, Title, CategoryScale, LinearScale, Tooltip);
 
 watch(canvas, () => {
 	drawChart();
 });
 
-watch([data, filters.value.values], () => {
+watch([data, filters.value.values, bestWorst], () => {
 	drawChart();
 });
 
@@ -49,7 +65,7 @@ function drawChart() {
 				},
 				title: {
 					display: true,
-					text: `Top ${data.datasets[0].data.length} countries for ${indicatorToName(filters.value.values.first_indicator)}`,
+					text: `${bestWorst.value === 'best' ? 'Best' : 'Worst'} ${data.datasets[0].data.length} countries for ${indicatorToName(filters.value.values.first_indicator)}`,
 				},
 				tooltip: {
 					enabled: true,
@@ -86,7 +102,11 @@ function getData(): ChartData<'bar'> {
 	const slice = data.value
 		.filter((item) => item[first_indicator] !== 'NA')
 		.sort((a, b) => {
-			return (b[first_indicator] as number) - (a[first_indicator] as number);
+			if (bestWorst.value === 'best') {
+				return (b[first_indicator] as number) - (a[first_indicator] as number);
+			} else {
+				return (a[first_indicator] as number) - (b[first_indicator] as number);
+			}
 		})
 		.slice(0, 5);
 

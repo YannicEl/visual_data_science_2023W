@@ -98,14 +98,39 @@ function getData(): ChartData<'bar'> {
 		labels,
 		datasets: [
 			{
-				label: countryCodeToName(filters.value.values.country_code),
-				data: data.value
-					.filter((row) => row.country_code === filters.value.values.country_code)
-					.sort((a, b) => a.year - b.year)
-					.map((item) => item[first_indicator]) as number[],
+				label:
+					filters.value.values.country_code === 'all'
+						? 'World average'
+						: countryCodeToName(filters.value.values.country_code),
+				data:
+					filters.value.values.country_code === 'all'
+						? getWorldAverage()
+						: (data.value
+								.filter((row) => row.country_code === filters.value.values.country_code)
+								.sort((a, b) => a.year - b.year)
+								.map((item) => item[first_indicator]) as number[]),
 				borderColor: '#1984ff',
 			},
 		],
 	};
+}
+
+function getWorldAverage(): number[] {
+	const { first_indicator } = filters.value.values;
+
+	const map = new Map<number, number>();
+
+	data.value.forEach((row) => {
+		const value = row[first_indicator];
+		if (value === 'NA') return;
+
+		if (map.has(row.year)) {
+			map.set(row.year, (map.get(row.year)! + value) / 2);
+		} else {
+			map.set(row.year, value);
+		}
+	});
+
+	return [...map.values()];
 }
 </script>

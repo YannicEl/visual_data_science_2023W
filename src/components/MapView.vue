@@ -1,8 +1,11 @@
 <template>
 	<div class="flex flex-col">
+		<div class="w-full text-center text-sm">
+			{{ indicatorToName(filters.values.first_indicator) }}
+		</div>
 		<div class="relative flex h-full">
 			<div ref="mapElement" class="w-full"></div>
-			<div class="flex flex-col items-center pl-4 pr-2 text-xl font-semibold">
+			<div class="flex flex-col items-center pl-4 pr-2">
 				<span>{{ range.max.toFixed(0) }}</span>
 				<div class="h-full w-12 bg-gradient-to-b from-[#1984ff] to-white"></div>
 				<span>{{ range.min }}</span>

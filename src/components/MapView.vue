@@ -3,25 +3,10 @@
 		<div class="relative flex h-full">
 			<div ref="mapElement" class="w-full"></div>
 			<div class="flex flex-col items-center pl-4 pr-2 text-xl font-semibold">
-				<span>1</span>
+				<span>{{ range.max.toFixed(0) }}</span>
 				<div class="h-full w-12 bg-gradient-to-b from-[#1984ff] to-white"></div>
-				<span>0</span>
+				<span>{{ range.min }}</span>
 			</div>
-			<!-- <DetailView :info="hoverInfoCase" class="absolute right-0 top-0 h-full w-1/3" />
-			<div class="absolute left-4 top-4 min-w-60 bg-black bg-opacity-80 p-4 text-white">
-				{{ hoverInfoDistrict }}
-			</div> -->
-
-			<!-- <div class="h-100 min-w-40 absolute right-4 top-4 bg-black bg-opacity-80 p-4 text-white">
-				<div class="flex h-full w-full flex-col">
-					<div v-for="key in Object.keys(hoverInfoCase)" :key="key" class="flex">
-						<div class="underline">{{ dataNameMapping[key] }}:</div>
-						<div class="ml-1">
-							{{ hoverInfoCase[key] }}
-						</div>
-					</div>
-				</div>
-			</div> -->
 		</div>
 	</div>
 </template>
@@ -35,8 +20,20 @@ const { data, filters } = useData();
 
 const mapElement = ref<HTMLDivElement>();
 
-// const hoverInfoDistrict = ref('Hover over a district!');
-// const hoverInfoCase = ref<Record<string, any>>({});
+const range = computed(() => {
+	let min = 0;
+	let max = 0;
+
+	data.value.forEach((row) => {
+		const value = row[filters.value.values.first_indicator];
+		if (value === 'NA') return;
+
+		min = Math.min(min, value);
+		max = Math.max(max, value);
+	});
+
+	return { min, max };
+});
 
 watch([data, filters.value.values], ([newData]) => {
 	setData(newData);
@@ -85,25 +82,6 @@ watch(mapElement, (newValue) => {
 			const country = event.features?.[0]?.properties?.iso_3166_1_alpha_3;
 			if (country) filters.value.values.country_code = country;
 		});
-
-		// map..on('mousemove', (event) => {
-		// 	const counts = map..queryRenderedFeatures(event.point, {
-		// 		layers: ['boundaries-fill'],
-		// 	});
-
-		// 	const count = counts[0];
-		// 	hoverInfoDistrict.value = count
-		// 		? `${count.properties?.LAD13NM}: ${count.properties?.count} cases`
-		// 		: 'Hover over a district!';
-
-		// 	const cases = map..queryRenderedFeatures(event.point, {
-		// 		layers: ['data'],
-		// 	});
-
-		// 	const caseFeature = cases[0];
-		// 	if (caseFeature && caseFeature.properties) hoverInfoCase.value = caseFeature.properties;
-		// 	// hoverInfoCase.value = caseFeature && caseFeature.properties ? caseFeature.properties : {};
-		// });
 	});
 });
 

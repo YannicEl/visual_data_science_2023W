@@ -6,12 +6,8 @@
 			<span>Indicator</span>
 
 			<select v-model="filters.values.first_indicator" name="first_indicator">
-				<option
-					v-for="option in filters.options.indicators"
-					:value="option.value"
-					class="capitalize"
-				>
-					{{ option.name }}
+				<option v-for="option in filters.options.indicators" :value="option" class="capitalize">
+					{{ indicatorToName(option) }}
 				</option>
 			</select>
 		</label>

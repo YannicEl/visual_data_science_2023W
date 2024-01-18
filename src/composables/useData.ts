@@ -13,23 +13,16 @@ export interface Data {
 const data = shallowRef<Data[]>([]);
 const loaded = ref(false);
 
-const indicators = (
-	[
-		'enrolment_rate_pre_primary',
-		'enrolment_rate_primary',
-		'enrolment_rate_secondary',
-		'annual_freshwater_withdrawals',
-		'electric_power_consumption',
-		'access_to_electricity',
-	] as const
-).map((key) => {
-	return {
-		value: key,
-		name: key.split('_').join(' '),
-	};
-});
+const indicators = [
+	'enrolment_rate_pre_primary',
+	'enrolment_rate_primary',
+	'enrolment_rate_secondary',
+	'annual_freshwater_withdrawals',
+	'electric_power_consumption',
+	'access_to_electricity',
+] as const;
 
-type Indicators = (typeof indicators)[number]['value'];
+type Indicators = (typeof indicators)[number];
 
 const filters = ref({
 	values: {

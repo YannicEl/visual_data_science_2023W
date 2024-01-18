@@ -1,14 +1,6 @@
 <template>
-	<div class="h-full w-full">
-		<div class="flex items-end gap-2">
-			<CountrySelect v-model="country" :allOption="false" class="w-min" />
-			<button @click="addCountry">Add Country</button>
-			<button @click="reset">Reset</button>
-		</div>
-
-		<div class="relative h-full w-full">
-			<canvas ref="canvas" class="absolute inset-0"></canvas>
-		</div>
+	<div class="relative h-full w-full">
+		<canvas ref="canvas" class="absolute inset-0"></canvas>
 	</div>
 </template>
 
@@ -29,7 +21,6 @@ const { unfiltered: data, filters } = useData();
 
 const canvas = ref<HTMLCanvasElement>();
 const chart = ref<Chart>();
-const country = ref<string>('AUT');
 
 Chart.register(
 	Title,
@@ -64,7 +55,7 @@ function drawChart() {
 			plugins: {
 				title: {
 					display: true,
-					text: `${filters.value.values.first_indicator.split('_').join(' ')} over time`,
+					text: `${indicatorToName(filters.value.values.first_indicator)} over time`,
 				},
 				tooltip: {
 					enabled: true,
@@ -85,7 +76,7 @@ function drawChart() {
 				y: {
 					title: {
 						display: true,
-						text: first_indicator.split('_').join(' '),
+						text: indicatorToName(first_indicator),
 					},
 				},
 			},
@@ -107,19 +98,14 @@ function getData(): ChartData<'bar'> {
 		labels,
 		datasets: [
 			{
-				label: countryCodeToName(country.value),
+				label: countryCodeToName(filters.value.values.country_code),
 				data: data.value
-					.filter((row) => row.country_code === country.value)
+					.filter((row) => row.country_code === filters.value.values.country_code)
+					.sort((a, b) => a.year - b.year)
 					.map((item) => item[first_indicator]) as number[],
 				borderColor: '#1984ff',
 			},
 		],
 	};
-}
-
-function reset() {}
-
-function addCountry() {
-	drawChart();
 }
 </script>

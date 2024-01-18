@@ -23,8 +23,6 @@ const countries: Map<string, string> = new Map();
 	const country_name = item['Country Name'];
 	const series = item['Series'] ?? item['Series Name'];
 
-	countries.set(country_code, country_name);
-
 	if (!series) return;
 
 	Object.entries(item).forEach(([key, value]) => {

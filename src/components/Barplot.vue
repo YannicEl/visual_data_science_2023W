@@ -49,7 +49,7 @@ function drawChart() {
 				},
 				title: {
 					display: true,
-					text: `Top ${data.datasets[0].data.length} countries for ${filters.value.values.first_indicator.split('_').join(' ')}`,
+					text: `Top ${data.datasets[0].data.length} countries for ${indicatorToName(filters.value.values.first_indicator)}`,
 				},
 				tooltip: {
 					enabled: true,
@@ -70,7 +70,7 @@ function drawChart() {
 				y: {
 					title: {
 						display: true,
-						text: first_indicator.split('_').join(' '),
+						text: indicatorToName(first_indicator),
 					},
 				},
 			},

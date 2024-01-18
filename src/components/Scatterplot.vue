@@ -1,20 +1,16 @@
 <template>
-	<div class="h-full w-full">
+	<div class="flex h-full w-full flex-col">
 		<label class="custom-input w-min px-4">
 			<span>Compare against</span>
 
 			<select v-model="filters.values.second_indicator" name="second_indicator">
-				<option
-					v-for="option in filters.options.indicators"
-					:value="option.value"
-					class="capitalize"
-				>
-					{{ option.name }}
+				<option v-for="option in filters.options.indicators" :value="option" class="capitalize">
+					{{ indicatorToName(option) }}
 				</option>
 			</select>
 		</label>
 
-		<div class="relative">
+		<div class="relative flex-1">
 			<canvas ref="canvas" class="absolute inset-0"></canvas>
 		</div>
 	</div>
@@ -63,7 +59,7 @@ function drawChart() {
 				},
 				title: {
 					display: true,
-					text: 'Chart.js Bar Chart - Stacked',
+					text: `${indicatorToName(first_indicator)} / ${indicatorToName(second_indicator)}`,
 				},
 				tooltip: {
 					enabled: true,
@@ -78,13 +74,13 @@ function drawChart() {
 				x: {
 					title: {
 						display: true,
-						text: first_indicator.split('_').join(' '),
+						text: indicatorToName(first_indicator),
 					},
 				},
 				y: {
 					title: {
 						display: true,
-						text: second_indicator.split('_').join(' '),
+						text: indicatorToName(second_indicator),
 					},
 				},
 			},
